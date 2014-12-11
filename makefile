@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-std=gnu11 -O0 -Wall
 
-tester: derivative.o test.o
+tester: derivative.o
 
 clean:
 	rm *.o
