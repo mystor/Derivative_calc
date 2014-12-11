@@ -2,57 +2,72 @@
 #include <stdlib.h>
 #include "derivative.h"
 
-struct Tree *deritive(struct Tree *orig){
+struct Tree *derivative(struct Tree *tree){
     struct Tree *node = malloc(sizeof(struct Tree));
-    switch(orig->current.func) {
-        case '\0':
-            if(orig->current.x == '\0'){
-                node->current.val = 0;
-            } else {
-                node->current.val = 1;
-            }
-            break;
+    if(!tree->node_type){
+        switch(tree->this.func){
         case '+':
-            node->left.pointer = deritive(orig->left.pointer);
-            node->right.pointer = deritive(orig->right.pointer);
+            set_func(node, '+');
+            node->left = derivative(tree->left);
+            node->right = derivative(tree->right);
             break;
         case '*':
-            node->current.func = '+';
-            node->left.pointer = deritive(orig->left.pointer);
-            node->right.pointer = deritive(orig->right.pointer);
+            set_func(node, '+');
+            node->left = malloc(sizeof(struct Tree));
+            node->right = malloc(sizeof(struct Tree));
+            set_func(node->left, '*');
+            set_func(node->right, '*');
+            node->left->left = derivative(tree->left);
+            node->left->right = copy_tree(tree->right);
+            node->right->left = derivative(tree->right);
+            node->right->right = copy_tree(tree->left);
             break;
-        default:
-            fprintf(stderr, "WTF is %c??\n", orig->current.func);
-            exit(1);
-            break;
+        }
+        return node;
+    } else if(tree->node_type == 1) {
+        node->node_type = NUM;
+        node->this.num = 0;
+    } else { //ddx of x is 1
+        node->node_type = NUM;
+        node->this.num = 1;
     }
     return node;
 }
+    
+void set_func(struct Tree *node, char f){
+    node->node_type = FUNC;
+    node->this.func = f;
+}
 
-/* recursivly free()'s all pointers in tree */
-void free_tree(struct Tree* tree) {
-    if (tree->left.pointer == NULL && tree->right.pointer == NULL) {
+struct Tree *copy_tree(struct Tree *tree){
+    if(tree == NULL){
+        return NULL;
+    }
+    struct Tree *node = malloc(sizeof(struct Tree));
+    node->node_type = tree->node_type;
+    node->this = tree->this;
+    node->left = copy_tree(tree->left);
+    node->right = copy_tree(tree->right);
+    return node;
+}
+
+/* recursivly free()'s all pointers in a tree */
+void free_tree(struct Tree *tree){
+    if(tree->left == NULL && tree->right == NULL){
         free(tree);
-        return;
-    } else if (tree->left.pointer == NULL) {
-        free_tree(tree->right.pointer);
+    } else if(tree->left == NULL){
+        free_tree(tree->right);
         free(tree);
-    } else if (tree->right.pointer == NULL) {
-        free_tree(tree->left.pointer);
+    } else if(tree->right == NULL){
+        free_tree(tree->left);
         free(tree);
     } else {
-        free_tree(tree->left.pointer);
-        free_tree(tree->right.pointer);
+        free_tree(tree->right);
+        free_tree(tree->left);
         free(tree);
     }
 }
 
-void print_tree(struct Tree *t, int depth){
+void print_tree(struct Tree *tree){
     return;
-}
-
-void print_tree_format(int depth){
-    for(int i = 0; i < depth; ++i){
-        printf("   ");
-    }
 }

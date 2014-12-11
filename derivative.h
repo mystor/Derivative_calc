@@ -2,30 +2,31 @@
    Header for derivative calculator
  */
 
-typedef enum {
-    true = 1,
-    false = 0,
-} bool;
+enum this_node_type {
+    FUNC = 0,
+    NUM = 1,
+    VAR = 2
+};
 
 struct Tree {
-    int f;
-    union cur {
+    enum this_node_type node_type;
+    union this_node {
         char func;
-        float val;
-        char x;
-    } current;
-    union branch {
-        struct Tree *pointer;
-        float val;
-        char variable;
-    } left, right;
+        float num;
+        int var; // acts as bool; only one variable
+    } this;
+    struct Tree * left;
+    struct Tree * right;
 };
 
 /* core functions */
-struct Tree *deritive(struct Tree *orig);
+struct Tree *derivative(struct Tree *orig);
 void free_tree(struct Tree *tree);
 
+/* helper functions */
+void set_func(struct Tree *node, char f);
+struct Tree *copy_tree(struct Tree *tree);
+    
 /* tester functions */
-void print_tree(struct Tree *t, int depth);
-void print_tree_format(int depth);
-struct Tree *test_tree();
+void print_tree(struct Tree *t);
+
