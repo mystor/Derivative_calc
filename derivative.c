@@ -51,6 +51,10 @@ struct Tree *copy_tree(struct Tree *tree){
     return node;
 }
 
+void simplify_AST(struct Tree *AST){
+    return;
+}
+
 /* recursivly free()'s all pointers in a tree */
 void free_tree(struct Tree *tree){
     if(tree->left == NULL && tree->right == NULL){

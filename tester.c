@@ -7,6 +7,12 @@ struct Tree *make_tree();
 int main(){
     struct Tree *tree = make_tree();
     struct Tree *foo = derivative(tree);
+    printf("Original Equation:     ");
+    print_AST(tree);
+    printf("\nRaw from derivative:   ");
+    print_AST(foo);
+    printf("\nAfter Simplify:        ");
+    simplify_AST(foo);
     print_AST(foo);
     free_tree(foo);
     free_tree(tree);
