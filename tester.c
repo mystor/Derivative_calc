@@ -7,6 +7,7 @@ struct Tree *make_tree();
 int main(){
     struct Tree *tree = make_tree();
     struct Tree *foo = derivative(tree);
+    print_AST(foo);
     free_tree(foo);
     free_tree(tree);
     return 0;

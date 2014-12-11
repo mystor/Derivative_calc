@@ -28,5 +28,5 @@ void set_func(struct Tree *node, char f);
 struct Tree *copy_tree(struct Tree *tree);
     
 /* tester functions */
-void print_tree(struct Tree *t);
+void print_AST(struct Tree *AST);
 

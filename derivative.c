@@ -68,6 +68,22 @@ void free_tree(struct Tree *tree){
     }
 }
 
-void print_tree(struct Tree *tree){
-    return;
+void print_AST(struct Tree *AST){
+    if(AST->left != NULL){
+        print_AST(AST->left);
+    }
+    switch (AST->node_type){
+    case FUNC:
+        printf("%c", AST->this.func);
+        break;
+    case NUM:
+        printf("%f", AST->this.num);
+        break;
+    case VAR:
+        printf("x");
+        break;
+    }
+    if(AST->right != NULL){
+        print_AST(AST->right);
+    }
 }
