@@ -1,3 +1,11 @@
 * Derivative Calculator
+** About
+   - Fun little derivative calculator, not yet complete at all!!
 ** To do
-   1. Make a proper to do list
+   1. make derivative feature complete.
+      - add '/', '-', and '^'
+      - add a print_ast() function
+      - add a ast_to_str() function
+   2. add parser.c & parser.h
+      - need to parse normal looking equation into AST
+      - right now, tree is just hard-coded
