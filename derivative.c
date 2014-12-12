@@ -23,20 +23,25 @@ struct Tree *derivative(struct Tree *tree){
             node->right->right = copy_tree(tree->left);
             break;
         case '^':
-            node->left = calloc(1, sizeof(struct Tree));
-            node->right = calloc(1, sizeof(struct Tree));
-            node->right->left = calloc(1, sizeof(struct Tree));
-            node->right->right = calloc(1, sizeof(struct Tree));
-            node->right->right->left = calloc(1, sizeof(struct Tree));
-            node->right->right->right = calloc(1, sizeof(struct Tree));
-            set_func(node, '*');
-            set_func(node->right, '^');
-            set_func(node->right->right, '+');
-            node->left = copy_tree(tree->right);
-            node->right->left = copy_tree(tree->left);
-            node->right->right->left = copy_tree(tree->right);
-            node->right->right->right->node_type = NUM;
-            node->right->right->right->this.num = -1;
+            if(!is_defx(tree->right)){
+                node->left = calloc(1, sizeof(struct Tree));
+                node->right = calloc(1, sizeof(struct Tree));
+                node->right->left = calloc(1, sizeof(struct Tree));
+                node->right->right = calloc(1, sizeof(struct Tree));
+                node->right->right->left = calloc(1, sizeof(struct Tree));
+                node->right->right->right = calloc(1, sizeof(struct Tree));
+                set_func(node, '*');
+                set_func(node->right, '^');
+                set_func(node->right->right, '+');
+                node->left = copy_tree(tree->right);
+                node->right->left = copy_tree(tree->left);
+                node->right->right->left = copy_tree(tree->right);
+                node->right->right->right->node_type = NUM;
+                node->right->right->right->this.num = -1;
+        } else {
+            fprintf(stderr, "expodentials arn't defined yet!\n");
+            exit(1);
+        }
             break;
         default:
             fprintf(stderr, "WTF is '%c'??\n", tree->this.func);
@@ -167,6 +172,19 @@ void switch_up(struct Tree *AST, int is_left){
                 free(tmp1);
                 free(tmp2);
             }
+}
+
+/* sets the markers on the parts of the tree that are defined in terms of x */
+int is_defx(struct Tree *tree){
+    if(tree == NULL){
+        return 0;
+    } else if(tree->node_type == VAR){
+        return 1;
+    } else if(is_defx(tree->left) || is_defx(tree->right)){
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 /* recursivly free()'s all pointers in a tree */
