@@ -1,4 +1,4 @@
-/* 
+/*
    Header for derivative calculator
  */
 
@@ -15,8 +15,8 @@ struct Tree {
         float num;
         int var; // acts as bool; only one variable
     } this;
-    struct Tree * left;
-    struct Tree * right;
+    struct Tree *left;
+    struct Tree *right;
 };
 
 /* core functions */
@@ -34,4 +34,3 @@ void set_node(struct Tree *AST, float val);
 
 /* tester functions */
 void print_AST(struct Tree *AST);
-
