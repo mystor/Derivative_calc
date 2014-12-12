@@ -21,9 +21,8 @@
 ## To do<a id="sec-1-2" name="sec-1-2"></a>
 
 1.  make derivative feature complete.
-    -   add '/', '-', and '<sup>'</sup>
-    -   add a print<sub>ast</sub>() function
-    -   add a ast<sub>to</sub><sub>str</sub>() function
+    -   add /
+    -   add a ast\\<sub>to\\</sub><sub>str</sub>() function
 2.  add parser.c & parser.h
     -   need to parse normal looking equation into AST
     -   right now, tree is just hard-coded
