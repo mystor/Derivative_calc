@@ -59,6 +59,34 @@ void simplify_AST(struct Tree *AST){
         switch(AST->this.func){
         case '+':
             if(AST->left->node_type == NUM && AST->left->this.num == 0){
+                switch_up(AST, 0);
+            } else if(AST->right->node_type == NUM && AST->right->this.num == 0){
+                switch_up(AST, 1);
+            }
+            break;
+        case '*':
+            if(AST->left->node_type == NUM && AST->right->node_type == NUM){
+                float l = AST->left->this.num;
+                float r = AST->right->this.num;
+                AST->node_type = NUM;
+                AST->this.num = l * r;
+                free(AST->left);
+                free(AST->right);
+                AST->left = NULL;
+                AST->right = NULL;
+            } else if(AST->left->node_type == NUM && AST->left->this.num == 1){
+                switch_up(AST, 0);
+            } else if(AST->right->node_type == NUM && AST->right->this.num == 1){
+                switch_up(AST, 1);
+            }
+        }
+    }
+    simplify_AST(AST->left);
+    simplify_AST(AST->right);
+}
+
+void switch_up(struct Tree *AST, int is_left){
+            if(!is_left){
                 switch(AST->right->node_type){
                 case NUM:
                     AST->node_type = NUM;
@@ -79,7 +107,7 @@ void simplify_AST(struct Tree *AST){
                 AST->right = tmp1->right;
                 free(tmp1);
                 free(tmp2);
-            } else if(AST->right->node_type == NUM && AST->right->this.num == 0) {
+            } else {
                 switch(AST->left->node_type){
                 case NUM:
                     AST->node_type = NUM;
@@ -100,24 +128,7 @@ void simplify_AST(struct Tree *AST){
                 AST->right = tmp1->right;
                 free(tmp1);
                 free(tmp2);
-                }
-            break;
-        case '*':
-            if(AST->left->node_type == NUM && AST->left->node_type == NUM){
-                float l = AST->left->this.num;
-                float r = AST->right->this.num;
-                AST->node_type = NUM;
-                AST->this.num = l * r;
-                free(AST->left);
-                free(AST->right);
-                AST->left = NULL;
-                AST->right = NULL;
             }
-            break;
-        }
-    }
-    simplify_AST(AST->left);
-    simplify_AST(AST->right);
 }
 
 /* recursivly free()'s all pointers in a tree */
@@ -146,7 +157,7 @@ void print_AST(struct Tree *AST){
         printf("%c", AST->this.func);
         break;
     case NUM:
-        printf("%f", AST->this.num);
+        printf("%.0f", AST->this.num);
         break;
     case VAR:
         printf("x");

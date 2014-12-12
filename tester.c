@@ -15,6 +15,7 @@ int main(){
     simplify_AST(foo);
     simplify_AST(foo);
     print_AST(foo);
+    printf("\n");
     
     free_tree(foo);
     free_tree(tree);
@@ -32,8 +33,8 @@ struct Tree *make_tree(){
     node->right->node_type = NUM;
     node->right->this.num = 3;
     set_func(node->left, '*');
-    node->left->left->node_type = NUM;
-    node->left->left->this.num = 2;
+    node->left->left->node_type = VAR;
+    node->left->left->this.var = 1;
     node->left->right->node_type = VAR;
     node->left->right->this.var = 1;
     return node;
