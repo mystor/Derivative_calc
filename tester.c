@@ -10,8 +10,10 @@ int main(){
     printf("Original Equation:     ");
     print_AST(tree);
     printf("\nRaw from derivative:   ");
+
     print_AST(foo);
     printf("\nAfter Simplify:        ");
+    simplify_AST(foo);
     simplify_AST(foo);
     simplify_AST(foo);
     print_AST(foo);
@@ -32,10 +34,10 @@ struct Tree *make_tree(){
     node->left->right = malloc(sizeof(struct Tree));
     node->right->node_type = NUM;
     node->right->this.num = 3;
-    set_func(node->left, '*');
+    set_func(node->left, '^');
     node->left->left->node_type = VAR;
-    node->left->left->this.var = 1;
-    node->left->right->node_type = VAR;
-    node->left->right->this.var = 1;
+    node->left->left->this.num = 1;
+    node->left->right->node_type = NUM;
+    node->left->right->this.num = 3;
     return node;
 }

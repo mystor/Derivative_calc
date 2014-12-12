@@ -22,6 +22,25 @@ struct Tree *derivative(struct Tree *tree){
             node->right->left = derivative(tree->right);
             node->right->right = copy_tree(tree->left);
             break;
+        case '^':
+            node->left = malloc(sizeof(struct Tree));
+            node->right = malloc(sizeof(struct Tree));
+            node->right->left = malloc(sizeof(struct Tree));
+            node->right->right = malloc(sizeof(struct Tree));
+            node->right->right->left = malloc(sizeof(struct Tree));
+            node->right->right->right = malloc(sizeof(struct Tree));
+            set_func(node, '*');
+            set_func(node->right, '^');
+            set_func(node->right->right, '+');
+            node->left = copy_tree(tree->right);
+            node->right->left = copy_tree(tree->left);
+            node->right->right->left = copy_tree(tree->right);
+            node->right->right->right->node_type = NUM;
+            node->right->right->right->this.num = -1;
+            break;
+        default:
+            fprintf(stderr, "WTF is '%c'??\n", tree->this.func);
+            exit(1);
         }
         return node;
     } else if(tree->node_type == 1) {
