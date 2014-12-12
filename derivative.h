@@ -28,6 +28,8 @@ void simplify_AST(struct Tree *AST);
 void set_func(struct Tree *node, char f);
 struct Tree *copy_tree(struct Tree *tree);
 void switch_up(struct Tree *AST, int is_left);
+void eval_node(struct Tree *AST);
+
 /* tester functions */
 void print_AST(struct Tree *AST);
 

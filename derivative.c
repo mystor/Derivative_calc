@@ -83,26 +83,12 @@ void simplify_AST(struct Tree *AST){
                 switch_up(AST, 1);
             }
             if(AST->left->node_type == NUM && AST->right->node_type == NUM){
-                float l = AST->left->this.num;
-                float r = AST->right->this.num;
-                AST->node_type = NUM;
-                AST->this.num = l + r;
-                free (AST->right);
-                free (AST->left);
-                AST->left = NULL;
-                AST->right = NULL;
+                eval_node(AST);
             }
             break;
         case '*':
             if(AST->left->node_type == NUM && AST->right->node_type == NUM){
-                float l = AST->left->this.num;
-                float r = AST->right->this.num;
-                AST->node_type = NUM;
-                AST->this.num = l * r;
-                free(AST->left);
-                free(AST->right);
-                AST->left = NULL;
-                AST->right = NULL;
+                eval_node(AST);
             } else if(AST->left->node_type == NUM && AST->left->this.num == 1){
                 switch_up(AST, 0);
             } else if(AST->right->node_type == NUM && AST->right->this.num == 1){
@@ -112,6 +98,29 @@ void simplify_AST(struct Tree *AST){
     }
     simplify_AST(AST->left);
     simplify_AST(AST->right);
+}
+
+void eval_node(struct Tree *AST){
+    float l = AST->left->this.num;
+    float r = AST->right->this.num;
+    char func = AST->this.func;
+    AST->node_type = NUM;
+
+    free(AST->left);
+    free(AST->right);
+    AST->left = NULL;
+    AST->right = NULL;
+    switch(func){
+    case '*':
+        AST->this.num = l * r;
+        break;
+    case '+':
+        AST->this.num = l + r;
+        break;
+    default:
+        fprintf(stderr, "WTF is %c?? (derivative.c: eval_node())\n", func);
+        break;
+    }
 }
 
 void switch_up(struct Tree *AST, int is_left){
