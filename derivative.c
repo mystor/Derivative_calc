@@ -82,6 +82,16 @@ void simplify_AST(struct Tree *AST){
             } else if(AST->right->node_type == NUM && AST->right->this.num == 0){
                 switch_up(AST, 1);
             }
+            if(AST->left->node_type == NUM && AST->right->node_type == NUM){
+                float l = AST->left->this.num;
+                float r = AST->right->this.num;
+                AST->node_type = NUM;
+                AST->this.num = l + r;
+                free (AST->right);
+                free (AST->left);
+                AST->left = NULL;
+                AST->right = NULL;
+            }
             break;
         case '*':
             if(AST->left->node_type == NUM && AST->right->node_type == NUM){
