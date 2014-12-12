@@ -1,12 +1,18 @@
 CC=gcc
 CFLAGS=-std=gnu11 -O0 -Wall
 
-tester: derivative.o
+tester: tester.o derivative.o
 
+README.md: proj.org
+	$(shell emacs --batch proj.org --funcall=org-md-export-to-markdown --funcall=kill-emacs)
+	mv proj.md README.md
+
+.PHONY: clean
 clean:
 	rm *.o
 	rm tester
 
-readme: # Please ignore this horrible hack
-	$(shell emacs --batch proj.org --funcall=org-md-export-to-markdown --funcall=kill-emacs)
-	mv proj.md README.md
+.PHONY: run
+run: tester
+	./tester
+
