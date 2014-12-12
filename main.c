@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "derivative.h"
+#include "parser.h"
 
 struct Tree *make_tree();
 
@@ -21,10 +22,11 @@ int main(){
 
     free_tree(foo);
     free_tree(tree);
+    printf("\nParser:\n");
+
     return 0;
 }
 
-/* Makes the AST of f(x) = 2x +3 */
 struct Tree *make_tree(){
     struct Tree *node = calloc(1, sizeof(struct Tree));
     set_func(node, '/');

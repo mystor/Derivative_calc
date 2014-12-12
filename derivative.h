@@ -30,6 +30,7 @@ struct Tree *copy_tree(struct Tree *tree);
 void switch_up(struct Tree *AST, int is_left);
 void eval_node(struct Tree *AST);
 int is_defx(struct Tree *AST);
+void set_node(struct Tree *AST, float val);
 
 /* tester functions */
 void print_AST(struct Tree *AST);

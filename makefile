@@ -2,8 +2,9 @@ CC=gcc
 CFLAGS=-std=gnu11 -O0 -Wall
 LIBS=-lm
 
-tester: tester.o derivative.o
+main: main.o parser.o derivative.o
 	$(CC) $(LIBS) $^ -o $@
+
 README.md: proj.org
 	$(shell emacs --batch proj.org --funcall=org-md-export-to-markdown --funcall=kill-emacs)
 	mv proj.md README.md
@@ -11,9 +12,9 @@ README.md: proj.org
 .PHONY: clean
 clean:
 	rm *.o
-	rm tester
+	rm main
 
 .PHONY: run
-run: tester
-	./tester
+run: main
+	./main
 

@@ -1,5 +1,3 @@
+#include <stdio.h>
+#include <stdlib.h>
 
-struct Tree *make_test_tree(){
-    struct Tree *t = malloc(sizeof(struct Tree));
-    
-}

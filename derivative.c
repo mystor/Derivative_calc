@@ -46,10 +46,18 @@ struct Tree *derivative(struct Tree *tree){
                 node->right->right->left = copy_tree(tree->right);
                 node->right->right->right->node_type = NUM;
                 node->right->right->right->this.num = -1;
-        } else {
-            fprintf(stderr, "expodentials arn't defined yet!\n");
-            exit(1);
-        }
+            } else {
+                node->left = calloc(1, sizeof(struct Tree));
+                node->right = calloc(1, sizeof(struct Tree));
+                node->right->left = calloc(1, sizeof(struct Tree));
+                node->right->right = calloc(1, sizeof(struct Tree));
+                set_func(node, '*');
+                node->left = copy_tree(tree);
+                set_func(node->right, 'L');
+                node->right->left->node_type = NUM;
+                node->right->left->this.num = M_E;
+                node->right->right = copy_tree(tree->right);
+            }
             break;
         case '/':
             node->left = calloc(1, sizeof(struct Tree));
@@ -149,17 +157,14 @@ void simplify_AST(struct Tree *AST){
                 switch_up(AST, 1);
             } else if((AST->right->node_type == NUM && AST->right->this.num == 0)
                       || (AST->left->node_type == NUM && AST->left->this.num == 0)){
-                free(AST->left);
-                free(AST->right);
-                AST->right = NULL;
-                AST->left = NULL;
-                AST->node_type = NUM;
-                AST->this.num = 0;
+                set_node(AST, 0);
             }
             break;
         case '^':
             if(AST->left->node_type == NUM && AST->right->node_type == NUM){
                 eval_node(AST);
+            } else if(AST->left->node_type == NUM && AST->left->this.num == 1){
+                set_node(AST, 1);
             }
             break;
         case 'L':
@@ -167,12 +172,25 @@ void simplify_AST(struct Tree *AST){
         case '-':
             if(AST->left->node_type == NUM && AST->right->node_type == NUM){
                 eval_node(AST);
+            } else if(AST->left->node_type == NUM && AST->left->this.num == 0){
+                switch_up(AST, 0);
+            } else if(AST->right->node_type == NUM && AST->right->this.num == 0){
+                switch_up(AST, 1);
             }
             break;
         }
     }
     simplify_AST(AST->left);
     simplify_AST(AST->right);
+}
+
+void set_node(struct Tree *AST, float val){
+    free(AST->left);
+    free(AST->right);
+    AST->right = NULL;
+    AST->left = NULL;
+    AST->node_type = NUM;
+    AST->this.num = 0;    
 }
 
 void eval_node(struct Tree *AST){
