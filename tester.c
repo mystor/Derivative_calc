@@ -18,7 +18,7 @@ int main(){
     simplify_AST(foo);
     print_AST(foo);
     printf("\n");
-    
+
     free_tree(foo);
     free_tree(tree);
     return 0;
@@ -26,12 +26,12 @@ int main(){
 
 /* Makes the AST of f(x) = 2x +3 */
 struct Tree *make_tree(){
-    struct Tree *node = malloc(sizeof(struct Tree));
+    struct Tree *node = calloc(1, sizeof(struct Tree));
     set_func(node, '+');
-    node->left = malloc(sizeof(struct Tree));
-    node->right = malloc(sizeof(struct Tree));
-    node->left->left = malloc(sizeof(struct Tree));
-    node->left->right = malloc(sizeof(struct Tree));
+    node->left = calloc(1, sizeof(struct Tree));
+    node->right = calloc(1, sizeof(struct Tree));
+    node->left->left = calloc(1, sizeof(struct Tree));
+    node->left->right = calloc(1, sizeof(struct Tree));
     node->right->node_type = NUM;
     node->right->this.num = 3;
     set_func(node->left, '^');
