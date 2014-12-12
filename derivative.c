@@ -75,6 +75,24 @@ struct Tree *derivative(struct Tree *tree){
             node->right->right->node_type = NUM;
             node->right->right->this.num = 2;
             break;
+        case 'L': //log(e, 3)
+            node->left = calloc(1, sizeof(struct Tree));
+            node->right = calloc(1, sizeof(struct Tree));
+            node->right->right = calloc(1, sizeof(struct Tree));
+            node->right->left = calloc(1, sizeof(struct Tree));
+            node->right->right->left = calloc(1, sizeof(struct Tree));
+            node->right->right->right = calloc(1, sizeof(struct Tree));
+            set_func(node, '/');
+            set_func(node->right, '*');
+            set_func(node->right->right, 'L');
+            node->left->node_type = NUM;
+            node->right->left->node_type = VAR;
+            node->right->left->this.var = 1;
+            node->right->right->left->node_type = NUM;
+            node->right->right->left->this.num = M_E;
+            node->right->right->right->node_type = VAR;
+            node->right->right->right->this.var = 1;
+            break;
         default:
             fprintf(stderr, "WTF is '%c'??\n", tree->this.func);
             exit(1);
@@ -140,9 +158,11 @@ void simplify_AST(struct Tree *AST){
             }
             break;
         case '^':
-//            if(AST->left->node_type == NUM && AST->right->node_type == NUM){
-//                eval_node(AST);
-//            }
+            if(AST->left->node_type == NUM && AST->right->node_type == NUM){
+                eval_node(AST);
+            }
+            break;
+        case 'L':
             break;
         case '-':
             if(AST->left->node_type == NUM && AST->right->node_type == NUM){
@@ -175,9 +195,9 @@ void eval_node(struct Tree *AST){
     case '-':
         AST->this.num = l - r;
         break;
-//    case '^':
-//        AST->this.num = pow(l, r);
-//        break;
+    case '^':
+        AST->this.num = pow(l, r);
+        break;
     default:
         fprintf(stderr, "WTF is %c?? (derivative.c: eval_node())\n", func);
         exit(1);
