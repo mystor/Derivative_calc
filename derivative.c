@@ -3,7 +3,7 @@
 #include "derivative.h"
 
 struct Tree *derivative(struct Tree *tree){
-    struct Tree *node = malloc(sizeof(struct Tree));
+    struct Tree *node = calloc(1, sizeof(struct Tree));
     if(!tree->node_type){
         switch(tree->this.func){
         case '+':
@@ -13,8 +13,8 @@ struct Tree *derivative(struct Tree *tree){
             break;
         case '*':
             set_func(node, '+');
-            node->left = malloc(sizeof(struct Tree));
-            node->right = malloc(sizeof(struct Tree));
+            node->left = calloc(1, sizeof(struct Tree));
+            node->right = calloc(1, sizeof(struct Tree));
             set_func(node->left, '*');
             set_func(node->right, '*');
             node->left->left = derivative(tree->left);
@@ -23,12 +23,12 @@ struct Tree *derivative(struct Tree *tree){
             node->right->right = copy_tree(tree->left);
             break;
         case '^':
-            node->left = malloc(sizeof(struct Tree));
-            node->right = malloc(sizeof(struct Tree));
-            node->right->left = malloc(sizeof(struct Tree));
-            node->right->right = malloc(sizeof(struct Tree));
-            node->right->right->left = malloc(sizeof(struct Tree));
-            node->right->right->right = malloc(sizeof(struct Tree));
+            node->left = calloc(1, sizeof(struct Tree));
+            node->right = calloc(1, sizeof(struct Tree));
+            node->right->left = calloc(1, sizeof(struct Tree));
+            node->right->right = calloc(1, sizeof(struct Tree));
+            node->right->right->left = calloc(1, sizeof(struct Tree));
+            node->right->right->right = calloc(1, sizeof(struct Tree));
             set_func(node, '*');
             set_func(node->right, '^');
             set_func(node->right->right, '+');
@@ -52,7 +52,7 @@ struct Tree *derivative(struct Tree *tree){
     }
     return node;
 }
-    
+
 void set_func(struct Tree *node, char f){
     node->node_type = FUNC;
     node->this.func = f;
@@ -62,7 +62,7 @@ struct Tree *copy_tree(struct Tree *tree){
     if(tree == NULL){
         return NULL;
     }
-    struct Tree *node = malloc(sizeof(struct Tree));
+    struct Tree *node = calloc(1, sizeof(struct Tree));
     node->node_type = tree->node_type;
     node->this = tree->this;
     node->left = copy_tree(tree->left);
