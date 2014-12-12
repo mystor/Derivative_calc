@@ -1,8 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "derivative.h"
 
 struct Tree *derivative(struct Tree *tree){
+    if(tree == NULL){
+        return NULL;
+    }
     struct Tree *node = calloc(1, sizeof(struct Tree));
     if(!tree->node_type){
         switch(tree->this.func){
@@ -11,6 +15,10 @@ struct Tree *derivative(struct Tree *tree){
             node->left = derivative(tree->left);
             node->right = derivative(tree->right);
             break;
+        case '-':
+            set_func(node, '-');
+            node->left = derivative(tree->left);
+            node->right = derivative(tree->right);
         case '*':
             set_func(node, '+');
             node->left = calloc(1, sizeof(struct Tree));
@@ -43,11 +51,34 @@ struct Tree *derivative(struct Tree *tree){
             exit(1);
         }
             break;
+        case '/':
+            node->left = calloc(1, sizeof(struct Tree));
+            node->left->left = calloc(1, sizeof(struct Tree));
+            node->left->left->left = calloc(1, sizeof(struct Tree));
+            node->left->left->right = calloc(1, sizeof(struct Tree));
+            node->left->right = calloc(1, sizeof(struct Tree));
+            node->left->right->left = calloc(1, sizeof(struct Tree));
+            node->left->right->right = calloc(1, sizeof(struct Tree));
+            node->right = calloc(1, sizeof(struct Tree));
+            node->right->left = calloc(1, sizeof(struct Tree));
+            node->right->right = calloc(1, sizeof(struct Tree));
+            set_func(node, '/');
+            set_func(node->left, '-');
+            set_func(node->left->left, '*');
+            set_func(node->left->right, '*');
+            set_func(node->right, '^');
+            node->left->left->left = derivative(tree->left);
+            node->left->left->right = copy_tree(tree->right);
+            node->left->right->left = derivative(tree->right);
+            node->left->right->right = copy_tree(tree->left);
+            node->right->left = copy_tree(tree->right);
+            node->right->right->node_type = NUM;
+            node->right->right->this.num = 2;
+            break;
         default:
             fprintf(stderr, "WTF is '%c'??\n", tree->this.func);
             exit(1);
         }
-        return node;
     } else if(tree->node_type == 1) {
         node->node_type = NUM;
         node->this.num = 0;
@@ -98,7 +129,26 @@ void simplify_AST(struct Tree *AST){
                 switch_up(AST, 0);
             } else if(AST->right->node_type == NUM && AST->right->this.num == 1){
                 switch_up(AST, 1);
+            } else if((AST->right->node_type == NUM && AST->right->this.num == 0)
+                      || (AST->left->node_type == NUM && AST->left->this.num == 0)){
+                free(AST->left);
+                free(AST->right);
+                AST->right = NULL;
+                AST->left = NULL;
+                AST->node_type = NUM;
+                AST->this.num = 0;
             }
+            break;
+        case '^':
+//            if(AST->left->node_type == NUM && AST->right->node_type == NUM){
+//                eval_node(AST);
+//            }
+            break;
+        case '-':
+            if(AST->left->node_type == NUM && AST->right->node_type == NUM){
+                eval_node(AST);
+            }
+            break;
         }
     }
     simplify_AST(AST->left);
@@ -122,8 +172,15 @@ void eval_node(struct Tree *AST){
     case '+':
         AST->this.num = l + r;
         break;
+    case '-':
+        AST->this.num = l - r;
+        break;
+//    case '^':
+//        AST->this.num = pow(l, r);
+//        break;
     default:
         fprintf(stderr, "WTF is %c?? (derivative.c: eval_node())\n", func);
+        exit(1);
         break;
     }
 }

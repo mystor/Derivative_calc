@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-std=gnu11 -O0 -Wall
+CFLAGS=-lm -std=gnu11 -O0 -Wall
 
 tester: tester.o derivative.o
 
