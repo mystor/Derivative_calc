@@ -13,7 +13,9 @@ int main(){
     print_AST(foo);
     printf("\nAfter Simplify:        ");
     simplify_AST(foo);
+    simplify_AST(foo);
     print_AST(foo);
+    
     free_tree(foo);
     free_tree(tree);
     return 0;

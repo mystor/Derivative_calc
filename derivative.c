@@ -52,7 +52,72 @@ struct Tree *copy_tree(struct Tree *tree){
 }
 
 void simplify_AST(struct Tree *AST){
-    return;
+    if(AST == NULL){
+        return;
+    }
+    if(AST->node_type == FUNC){
+        switch(AST->this.func){
+        case '+':
+            if(AST->left->node_type == NUM && AST->left->this.num == 0){
+                switch(AST->right->node_type){
+                case NUM:
+                    AST->node_type = NUM;
+                    AST->this.num = AST->right->this.num;
+                    break;
+                case VAR:
+                    AST->node_type = VAR;
+                    AST->this.var = AST->right->this.var;
+                    break;
+                case FUNC:
+                    AST->node_type = FUNC;
+                    AST->this.func = AST->right->this.func;
+                    break;
+                }
+                struct Tree *tmp1 = AST->right;
+                struct Tree *tmp2 = AST->left;
+                AST->left = tmp1->left;
+                AST->right = tmp1->right;
+                free(tmp1);
+                free(tmp2);
+            } else if(AST->right->node_type == NUM && AST->right->this.num == 0) {
+                switch(AST->left->node_type){
+                case NUM:
+                    AST->node_type = NUM;
+                    AST->this.num = AST->left->this.num;
+                    break;
+                case VAR:
+                    AST->node_type = VAR;
+                    AST->this.var = AST->left->this.var;
+                    break;
+                case FUNC:
+                    AST->node_type = FUNC;
+                    AST->this.func = AST->left->this.func;
+                    break;
+                }
+                struct Tree *tmp1 = AST->left;
+                struct Tree *tmp2 = AST->right;
+                AST->left = tmp1->left;
+                AST->right = tmp1->right;
+                free(tmp1);
+                free(tmp2);
+                }
+            break;
+        case '*':
+            if(AST->left->node_type == NUM && AST->left->node_type == NUM){
+                float l = AST->left->this.num;
+                float r = AST->right->this.num;
+                AST->node_type = NUM;
+                AST->this.num = l * r;
+                free(AST->left);
+                free(AST->right);
+                AST->left = NULL;
+                AST->right = NULL;
+            }
+            break;
+        }
+    }
+    simplify_AST(AST->left);
+    simplify_AST(AST->right);
 }
 
 /* recursivly free()'s all pointers in a tree */
